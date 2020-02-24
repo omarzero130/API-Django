@@ -16,42 +16,21 @@ class branchserializer(serializers.ModelSerializer):
 
     class Meta:
         model=branch
-        fields=['QR_code','id']
+        fields=['name','QR_code','id']
 
 
 class productsserializer(serializers.ModelSerializer):
     category=serializers.SerializerMethodField()
+    branch=serializers.SerializerMethodField()
     class Meta:
         model=products
-        fields=['name','Barcode','price','description','image','id','category']
+        fields=['name','Barcode','price','description','image','id','category','branch']
     def get_category(self,obj):
         return categoryserializer(obj.category).data
-
+    def get_branch(self,obj):
+        return branchserializer(obj.branch).data
 class productscreateserializer(serializers.ModelSerializer):
     class Meta:
         model=products
         fields=['name','Barcode','price','description','image','category']
 
-
-'''
-class productbranchSerializer(serializers.ModelSerializer):
-    product=serializers.SerializerMethodField()
-    branch=serializers.SerializerMethodField()
-    class Meta:
-        model=branch_products
-        fields=['product','branch','price','prev_price','quantity','id']
-
-
-    def get_product(self,obj):
-        return productsserializer(obj.product).data
-    def get_branch(self,object):
-        return branchserializer(object.branch).data
-
-
-class productbranchcreateSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model=branch_products
-        fields=['product','branch','price','prev_price','quantity','id']
-
-'''

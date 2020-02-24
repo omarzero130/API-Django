@@ -7,8 +7,8 @@ from .serializers import (productsserializer,
 from rest_framework import filters
 
 class productslist(ListAPIView):
-    br= request.query_params.get('branch')
-    queryset = products.objects.filter(branch=br)
+    brs= request.query_params.get('branch')
+    queryset = products.objects.filter(branch=brs)
     serializer_class = productsserializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['Barcode','name']

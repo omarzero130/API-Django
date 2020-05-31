@@ -25,8 +25,6 @@ SECRET_KEY = ')&u*mc$9z$2%8_o*py%!z31v(r$k77zd&(po(4!m(!2j*)#sq5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -45,32 +43,38 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
     'user',
     'order',
     'products',
-    'checkout',
     'paypal.standard.ipn',
-    'bootstrap4'
+    'checkout',
+    'django_extensions',
+    'bootstrap4',
+     'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
 ]
 
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
 SITE_ID=1
+
 ACCOUNT_UNIQUE_EMAIL=True
 AUTH_USER_MODEL='user.User'
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'user.serializers.UserSerializer',
+    'TOKEN_SERIALIZER':'user.serializers.TokenSerializer'
+
 }
 REST_AUTH_REGISTER_SERIALIZERS={
     'REGISTER_SERIALIZER':'user.serializers.UserRegisterationSerializer'
 }
 
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -101,6 +105,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'GP_FINAL.wsgi.application'
 
 
@@ -110,9 +115,9 @@ WSGI_APPLICATION = 'GP_FINAL.wsgi.application'
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'GP3',
+        'NAME': 'GP',
         'USER':'postgres',
-        'PASSWORD':'omarzero130',
+        'PASSWORD':'485916273',
         'HOST':'127.0.0.1',
         'PORT':'5432',
     }
@@ -137,6 +142,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CSRF_COOKIE_NAME='csrftoken'
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -151,26 +159,25 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': [
-    #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-       'rest_framework.permissions.AllowAny',
 
-    ]
-}
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS=[
+os.path.join(BASE_DIR,'templates/static')
+]
 CORS_ORIGIN_ALLOW_ALL=True
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'pics')
 PAYPAL_TEST=True
 PAYPAL_RECIVER_EMAIL='mazenreal22@gmail.com'
+
+CORS_ALLOW_HEADERS = [
+    'userid',
+    'content-type'
+
+]

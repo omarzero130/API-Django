@@ -5,42 +5,6 @@ from django.urls import reverse
 from paypal.standard.forms import PayPalPaymentsForm 
 from order.models import orders
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.views import APIView
-from order.models import orders
-from order.serializers import orderListSerializer
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-
-
-class Checkout2(APIView):
-    def post(self,request):
-        token=self.request.data.get('token',None)
-        print(token)
-        order=orders.objects.get(user=Token.objects.get(key=token).user,ordered=False)
-        order.ordered=True
-        order.save()
-        print(Token.objects.get(key=token).user)
-        print(order.ordered)
-        return Response(order)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @csrf_exempt
 def payment_done(request):
@@ -58,7 +22,7 @@ def payment_canceled(request):
     return render(request,'done.html')
 
 
-def checkouts(request):
+def checkout(request):
     order=get_object_or_404(orders,user=request.user,ordered=False)
     host=request.get_host()
 

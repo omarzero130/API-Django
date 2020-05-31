@@ -1,10 +1,27 @@
 from rest_framework import  serializers
 from.models import orders,order_details,wishlist,wishlistdetails,review
 from products.serializers import productsserializer
+from products.serializers import ProductFeaturesSerializer
+
+
 
 class string(serializers.StringRelatedField):
     def to_internal_value(self, data):
         return data
+
+
+class orderdetailsserializer(serializers.ModelSerializer):
+    product=string()
+    product_obj=serializers.SerializerMethodField()
+    price=serializers.SerializerMethodField()
+    class Meta:
+        model=order_details
+        fields=['product','quantity','id','product_obj','price']
+    def get_product_obj(self,obj):
+        return productsserializer(obj.product).data
+    def get_price(self,obj):
+        return obj.final_price()
+   
 
 
 class orderdetails(serializers.ModelSerializer):
@@ -17,24 +34,30 @@ class orderdetails(serializers.ModelSerializer):
         return productsserializer(obj.product).data
     def get_final_price(self,obj):
         return obj.price()
+class chartserializer(serializers.ModelSerializer):
+    product=serializers.SerializerMethodField()
+    
+    class Meta:
+        model=order_details
+        fields=['product','quantity','id']
+    def get_product(self,obj):
+            return productsserializer(obj.product).data
 
 
 class orderListSerializer(serializers.ModelSerializer):
     user=string()
-    total_price=serializers.SerializerMethodField()
     items=serializers.SerializerMethodField()
+    total=serializers.SerializerMethodField()
+   
     class Meta:
         model=orders
-        fields=['user','ordered','total_price','id','items']
-    def get_total_price(self,obj):
-        return obj.total()
-    def get_items(self,obj):
-        return orderdetails(obj.items.all(),many=True).data
+        fields=['user','ordered','id','items','total','created_at']
 
-class chartserializer(serializers.ModelSerializer):
-    class Meta:
-        model=order_details
-        fields=['product','quantity','id']
+    def get_items(self,obj):
+        return orderdetailsserializer(obj.items.all(),many=True).data
+    def get_total(self,obj):
+        return obj.total()
+   
 
 
 class wishlistserializer(serializers.ModelSerializer):
@@ -55,7 +78,7 @@ class wishlistdetailsserializer(serializers.ModelSerializer):
         fields = ['product', 'id']
 
     def get_product(self, obj):
-        return productbranchSerializer(obj.product).data
+        return productsserializer(obj.product).data
 
 
 class reviewserializer(serializers.ModelSerializer):

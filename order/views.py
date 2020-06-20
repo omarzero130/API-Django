@@ -87,10 +87,12 @@ class orderslist(ListAPIView):
 
 class orderdetails(RetrieveAPIView):
     serializer_class = orderListSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_object(self):
-        queryset = orders.objects.get(ordered=False, user=self.request.user)
+        #print(self.request.META.get('HTTP_AUTHORIZATION',None))
+        token=self.request.META.get('HTTP_AUTHORIZATION',None)
+        use=Token.objects.get(key=token).user
+        queryset = orders.objects.get(ordered=False, user=use)
         return queryset
 
 
@@ -120,3 +122,35 @@ class addtowhitelist():
 class review(CreateAPIView):
     queryset = review.objects.all()
     serializer_class = reviewserializer
+
+class topuserproducts(APIView):
+    def get(self,request):
+        token=request.META.get('HTTP_TOKEN',None)
+        user=Token.objects.get(key=token).user
+        user_orders=orders.objects.filter(user=user,ordered=True)
+        products=[]
+        counted=[]
+        unique=[]
+        dic={}
+        for i in user_orders:
+            for x in i.items.all():
+                products.append(x.product.name)
+        for i in products:
+            if i in unique:
+                pass
+            else:
+                unique.append(i)
+        for i in unique:
+            if products.count(i)>2:
+                pass
+            else:
+               dic={
+                   'name':i,
+                   'count':products.count(i)
+               }    
+
+               counted.append(dic)
+
+        print(sorted(counted, key = lambda i: i['count'],reverse=True)[:2]  )
+
+        return Response( sorted(counted, key = lambda i: i['count'],reverse=True)[:2] )

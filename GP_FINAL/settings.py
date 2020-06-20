@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'products',
     'paypal.standard.ipn',
     'checkout',
-    'django_extensions',
     'bootstrap4',
      'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
@@ -115,9 +114,9 @@ WSGI_APPLICATION = 'GP_FINAL.wsgi.application'
 DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'GP',
+        'NAME': 'GP_APP',
         'USER':'postgres',
-        'PASSWORD':'485916273',
+        'PASSWORD':'omarzero130',
         'HOST':'127.0.0.1',
         'PORT':'5432',
     }

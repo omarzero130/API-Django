@@ -35,7 +35,7 @@ class UserRegisterationSerializer(RegisterSerializer):
             'gender': self.validated_data.get('gender', ''),
             'birthdate': self.validated_data.get('birthdate', ''),
             'address': self.validated_data.get('address', ''),
-            'avatar': self.validate_data.get('avatar','')
+            #'avatar': self.validate_data.get('avatar','')
 
         }
 
@@ -47,7 +47,7 @@ class UserRegisterationSerializer(RegisterSerializer):
         user.address=self.cleaned_data.get('address')
         user.birthdate=self.cleaned_data.get('birthdate')
         user.gender=self.cleaned_data.get('gender')
-        user.avatar=self.cleaned_data.get('avatar')
+        #user.avatar=self.cleaned_data.get('avatar')
         user.save()
         adapter.save_user(request, user, self)
 

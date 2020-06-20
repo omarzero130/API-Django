@@ -6,9 +6,12 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer
 from rest_framework.views import APIView
+
+from rest_framework.generics import RetrieveAPIView 
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from user.models import User
+from rest_framework.authtoken.models import Token
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
@@ -20,7 +23,12 @@ class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
   
 
-class CurrentUserView(APIView):
+class CurrentUserView(RetrieveAPIView):
+    serializer_class=UserSerializer
     def get_object(self):
-        user=User.objects.get(self.request.user)
+        print(self.request.META.get('HTTP_AUTHORIZATION'))
+        token=self.request.META.get('HTTP_AUTHORIZATION')
+        use=Token.objects.get(key=token).user
+        user=User.objects.get(username=use)
         return user
+

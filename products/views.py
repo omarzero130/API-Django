@@ -79,8 +79,8 @@ def scrape():
         barcode=f'name{counter}'
         description='this is my product'
         urllib.request.urlretrieve(image,path)
-        cat=category.objects.get(id=148)
-        br=branch.objects.get(id=8)
+        cat=category.objects.get(id=1)
+        br=branch.objects.get(id=1)
         products.objects.create(name=name.text,Barcode=barcode,branch=br,image=img,
         description=description,price=finalprice,category=cat)
-
+#scrape()

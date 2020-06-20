@@ -11,7 +11,7 @@ class order_details(models.Model):
     ordered=models.BooleanField(default=False)
     product=models.ForeignKey(products,on_delete=models.CASCADE)
     quantity=models.IntegerField(default=1)
-    features=models.ManyToManyField(features,blank=True)
+    features=models.ManyToManyField(productfeatures,blank=True)
     def final_price(self):
         return self.product.price*self.quantity
 

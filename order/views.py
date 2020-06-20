@@ -13,45 +13,59 @@ from products.models import features,productfeatures
 
 class addtocart(APIView):
     def post(self, request):
-        item_id = request.data.get('id', None)
+        barcode = request.data.get('barcode', None)
         token = request.data.get('token', None)
-        features=request.data.get('features',[])
-        if item_id is None:
-            return Response({"message": "invalid request"}, status=Http404)
-
-        it = get_object_or_404(products, id=item_id)
+        feats=request.data.get('features',[])
+        print(barcode,token,feats)
+        if barcode is None:
+            return Response({"message": "invalid request"}, status=HTTP_400_BAD_REQUEST)
+        if feats:    
+            featrs=ast.literal_eval(feats)
+        print(featrs)
+        it = get_object_or_404(products, Barcode=barcode)
         order_ds= order_details.objects.filter(product=it, 
                                             user=Token.objects.get(key=token).user,
                                             ordered=False
                                                 )
-        for i in features:
-            order_ds=order_details.objects.filter(
+
+        features_count=features.objects.filter(product=it).count()
+        if features_count>len(featrs):
+            return Response({"message": "please Specify the Features"}, status=HTTP_400_BAD_REQUEST)
+                    
+        for i in featrs:
+            print(i)
+            order_item=order_ds.filter(
                 features__exact=i
             )
         if order_ds.exists():
-            prod=order_ds.first()
-            prod+=1
-            prod.save()    
+            order_item=order_ds.first()
+            order_item.quantity+=1
+            order_item.save()   
+            print('dwqd')
+
+            
         else:
+
             order_ds= order_details.objects.create(product=it, 
                                             user=Token.objects.get(key=token).user,
                                             ordered=False
                                                 )
-            order_ds.features.add(*features)
+
+            order_ds.features.add(*featrs)
             order_ds.save()
-            
+    
         order_qs = orders.objects.filter(user=Token.objects.get(key=token).user, ordered=False)
         if order_qs.exists():
             ord = order_qs[0]
-            if not ord.items.filter(product__id=order_ds.id).exists():
-                    order.items.add(order_ds)
+            if not ord.items.filter(product__id=order_item.id).exists():
+                    ord.items.add(order_item)
             return Response({"message": "this product is already in the cart"}, status=HTTP_200_OK)
-            
+                
+
 
         else:
-            print('sdfgh')
             ord = orders.objects.create(user=Token.objects.get(key=token).user)
-            ord.items.add(order_ds)
+            ord.items.add(order_item)
             return Response({"message": "added successfully"}, status=HTTP_200_OK)
 
 

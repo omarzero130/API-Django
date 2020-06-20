@@ -6,8 +6,6 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer
 from rest_framework.views import APIView
-
-from rest_framework.generics import RetrieveAPIView 
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from user.models import User
@@ -31,4 +29,6 @@ class CurrentUserView(RetrieveAPIView):
         use=Token.objects.get(key=token).user
         user=User.objects.get(username=use)
         return user
+
+
 

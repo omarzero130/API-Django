@@ -1,7 +1,7 @@
 from rest_framework import  serializers
 from.models import orders,order_details,wishlist,wishlistdetails,review
 from products.serializers import productsserializer
-from products.serializers import ProductFeaturesSerializer
+from products.serializers import ProductFeaturesSerializer,FeatureValuesSerializer
 
 
 
@@ -14,15 +14,17 @@ class orderdetailsserializer(serializers.ModelSerializer):
     product=string()
     product_obj=serializers.SerializerMethodField()
     price=serializers.SerializerMethodField()
+    features=serializers.SerializerMethodField()
     class Meta:
         model=order_details
-        fields=['product','quantity','id','product_obj','price']
+        fields=['product','quantity','id','product_obj','price','features']
     def get_product_obj(self,obj):
         return productsserializer(obj.product).data
     def get_price(self,obj):
         return obj.final_price()
    
-
+    def get_features(self,obj):
+        return FeatureValuesSerializer(obj.features.all(),many=True).data
 
 class orderdetails(serializers.ModelSerializer):
     product=serializers.SerializerMethodField()

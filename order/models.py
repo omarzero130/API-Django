@@ -20,6 +20,7 @@ class orders(models.Model):
     ordered=models.BooleanField(default=False)
     items=models.ManyToManyField(order_details)
     created_at=models.DateTimeField(auto_now_add=True)
+    final_order_price=models.FloatField(default=0.0)
     def total(self):
         tot=0
         for item in self.items.all():

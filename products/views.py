@@ -21,12 +21,15 @@ class StandardResultsSetPagination(PageNumberPagination):
 class productslist(ListAPIView):
    serializer_class = productsserializer
    def get_queryset(self):
-        brs= request.query_params.get('branchqr')
+        brs= self.request.headers['Branch']
         br=branch.objects.get(QR_code=brs)
         queryset = products.objects.filter(branch=br)
-        filter_backends = [filters.SearchFilter]
-        search_fields = ['Barcode','name']
+        barcode = self.request.query_params.get('barcode', None)
+        if barcode is not None:
+            queryset=products.objects.filter(Barcode=barcode)
+            print(queryset)
         return queryset
+
 class productscreate(CreateAPIView):
     queryset = products.objects.all
     serializer_class = productscreateserializer
@@ -54,11 +57,11 @@ class productfilter(ListAPIView):
 
 def scrape():
     path=''
-    counter=0
+    counter=5
 
     session= requests.Session()
     session.headers={
-        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36"
     }
     url='https://egypt.souq.com/eg-en/samsung/mobile-phones-33%7Csmart-watches-511%7Ctablets-94%7Cfitness-technology-498%7Cpower-banks-562/samsung/a-t-7/s/?_=1500309575629&sortby=sr&page=1&ref=nav'
     content=session.get(url,verify=False).content
@@ -83,4 +86,5 @@ def scrape():
         br=branch.objects.get(id=1)
         products.objects.create(name=name.text,Barcode=barcode,branch=br,image=img,
         description=description,price=finalprice,category=cat)
-#scrape()
+
+#scrape();

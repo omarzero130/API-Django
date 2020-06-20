@@ -8,23 +8,20 @@ from rest_framework.authtoken.models import Token
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields=['username','email','id','gender','birthdate','address','avatar','is_superuser','is_staff']
+        fields=['username','email','id','gender','birthdate','address','avatar','is_superuser','is_staff','points']
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields=['username','email','id','gender','birthdate','address','is_staff','avatar']
+        fields=['username','email','id','gender','birthdate','address','is_staff','avatar','points']
 
 class UserRegisterationSerializer(RegisterSerializer):
     username=serializers.CharField()
     gender=serializers.CharField()
-    birthdate=serializers.DateField()
-    address=serializers.CharField()
+   
     class Meta:
         model=User
-        fields=['username','email','password','gender','birthdate','address']
-
-
+        fields=['username','email','password','gender']
 
     def get_cleaned_data(self):
         return {
@@ -33,10 +30,7 @@ class UserRegisterationSerializer(RegisterSerializer):
             'password2': self.validated_data.get('password2', ''),
             'email': self.validated_data.get('email', ''),
             'gender': self.validated_data.get('gender', ''),
-            'birthdate': self.validated_data.get('birthdate', ''),
-            'address': self.validated_data.get('address', ''),
-            #'avatar': self.validate_data.get('avatar','')
-
+           
         }
 
     def save(self, request):
@@ -44,10 +38,7 @@ class UserRegisterationSerializer(RegisterSerializer):
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
         user.username=self.cleaned_data.get('username')
-        user.address=self.cleaned_data.get('address')
-        user.birthdate=self.cleaned_data.get('birthdate')
         user.gender=self.cleaned_data.get('gender')
-        #user.avatar=self.cleaned_data.get('avatar')
         user.save()
         adapter.save_user(request, user, self)
 

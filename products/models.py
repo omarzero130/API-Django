@@ -1,7 +1,5 @@
 from django.db import models
 
-
-
 def CreateQR_Code(name):
     qr=name.replace(' ','_')
     last=qr.upper()
@@ -12,7 +10,7 @@ class category(models.Model):
     def __str__(self):
         return self.name
 
-class brand(models.Model):
+class brands(models.Model):
    name=models.CharField(unique=True,max_length=20)
 
 

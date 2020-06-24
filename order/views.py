@@ -35,8 +35,8 @@ class addtocart(APIView):
                     
         for i in featrs:
             print(i)
-            order_item=order_ds.filter(
-                features__exact=i
+            order_ds=order_ds.filter(
+                features__exact=i  
             )
         if order_ds.exists():
             order_item=order_ds.first()
@@ -47,13 +47,13 @@ class addtocart(APIView):
             
         else:
 
-            order_ds= order_details.objects.create(product=it, 
+            order_item= order_details.objects.create(product=it, 
                                             user=Token.objects.get(key=token).user,
                                             ordered=False
                                                 )
 
-            order_ds.features.add(*featrs)
-            order_ds.save()
+            order_item.features.add(*featrs)
+            order_item.save()
     
         order_qs = orders.objects.filter(user=Token.objects.get(key=token).user, ordered=False)
         if order_qs.exists():
@@ -94,10 +94,13 @@ class orderdetailsquantity(APIView):
 
 
 class orderslist(ListAPIView):
-    serializer_class = orderListSerializer
-    permission_classes = [IsAuthenticated]
-    def get_queryset(self):
-        queryset = orders.objects.filter(ordered=True, user=self.request.user)
+   serializer_class = orderListSerializer
+
+   def get_queryset(self):
+        #print(self.request.META.get('HTTP_AUTHORIZATION',None))
+        token=self.request.META.get('HTTP_AUTHORIZATION',None)
+        use=Token.objects.get(key=token).user
+        queryset = orders.objects.filter    (ordered=True, user=use)
         return queryset
 
 

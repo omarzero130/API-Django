@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from products.models import products,category,branch,features,productfeatures,limited_offers
+from products.models import products,category,branch,features,productfeatures,limited_offers,brand_name
 from user.models import User
 from order.models import orders,order_details,wishlist,wishlistdetails,review
 from order.serializers import orderListSerializer,orderdetails
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView,CreateAPIView,RetrieveAPIView,DestroyAPIView,UpdateAPIView,RetrieveUpdateAPIView
 from products.serializers import (productsserializer,categoryserializer,productscreateserializer,branchserializer,
-                                 FeatureValuesSerializer,ProductFeaturesSerializer)
+                                 FeatureValuesSerializer,brandserializer,ProductFeaturesSerializer)
 from order.serializers import chartserializer
 from user.serializers import UserSerializer
 from rest_framework.response import Response
@@ -95,6 +95,12 @@ class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all().order_by('-id')
 
+
+
+class BrandsViewSet(viewsets.ModelViewSet):
+    
+    serializer_class = brandserializer
+    queryset = brand_name.objects.all().order_by('-id')
 
 
 class UserUpdate(APIView):

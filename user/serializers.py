@@ -8,12 +8,12 @@ from rest_framework.authtoken.models import Token
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields=['username','email','id','gender','birthdate','address','avatar','is_superuser','is_staff','points']
+        fields=['username','email','id','gender','birthdate','address','password','avatar','is_superuser','is_staff','points']
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
-        fields=['username','email','id','gender','birthdate','address','is_staff','avatar','points']
+        fields=['username','email','id','gender','birthdate','address','is_admin','is_staff','avatar','points']
 
 class UserRegisterationSerializer(RegisterSerializer):
     username=serializers.CharField()

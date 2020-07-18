@@ -10,9 +10,10 @@ class category(models.Model):
     def __str__(self):
         return self.name
 
-class brands(models.Model):
+class brand_name(models.Model):
    name=models.CharField(unique=True,max_length=20)
-
+   def __str__(self):
+       return self.name
 
 class branch(models.Model):
     name=models.CharField(max_length=100 ,default='',unique=True)
@@ -36,6 +37,7 @@ class products(models.Model):
     discount_price=models.FloatField(default=0.00)
     image=models.ImageField(default='')
     branch=models.ForeignKey(branch,on_delete=models.CASCADE)
+    brands=models.ForeignKey(brand_name,on_delete=models.CASCADE,default=1)
     def __str__(self):
         return f'{self.name}_{self.branch}'
     class Meta:

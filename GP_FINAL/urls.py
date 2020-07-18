@@ -11,8 +11,6 @@ urlpatterns = [
     path('products/', include('products.urls')),
     path('orders/',include('order.urls')),
     path('admindashboard/',include('admindashboard.urls')),
-    path('paypal/', include('paypal.standard.ipn.urls')),
-    path('checkout/',include('checkout.urls'))
 ]
 urlpatterns +=  staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

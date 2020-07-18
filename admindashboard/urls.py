@@ -2,7 +2,8 @@ from django.urls import include, path
 from . views import (UsersViewSet,Productstats,productsdelete,Orderstats,productsupdate,
                     Userstats,categoriesViewSet,orderedList,activeList,activeEdit,productscreate,productslist,
                     singleproduct,activeorders,topproducts,topusers,UserUpdate,branchViewSet,singleorder,GetUserOrders,
-                    productfeatureslist,addfeatures,singlefeature,deletefeaturesvalues,deletefeatures,productfeaturesUpdate,featurevaluesUpdate,offers_create)
+                    productfeatureslist,addfeatures,singlefeature,deletefeaturesvalues,deletefeatures
+                    ,productfeaturesUpdate,featurevaluesUpdate,offers_create,BrandsViewSet)
 from rest_framework.routers import DefaultRouter
 
 
@@ -10,6 +11,8 @@ router = DefaultRouter()
 router.register(r'branches', branchViewSet, basename='branches')
 router.register(r'users', UsersViewSet, basename='Users')
 router.register(r'categories', categoriesViewSet, basename='Categories')
+router.register(r'brands', BrandsViewSet, basename='Brands')
+
 urlpatterns = router.urls
 
 

@@ -9,14 +9,14 @@ from products.models import productfeatures,features
 class order_details(models.Model):
     user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,blank=True,null=True)
     ordered=models.BooleanField(default=False)
-    product=models.ForeignKey(products,on_delete=models.CASCADE)
+    product=models.ForeignKey(products,on_delete=models.CASCADE,default=1)
     quantity=models.IntegerField(default=1)
     features=models.ManyToManyField(productfeatures,blank=True)
     def final_price(self):
         return self.product.price*self.quantity
 
 class orders(models.Model):
-    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,default=1)
     ordered=models.BooleanField(default=False)
     items=models.ManyToManyField(order_details)
     created_at=models.DateTimeField(auto_now_add=True)
@@ -35,11 +35,11 @@ class wishlistdetails(models.Model):
     product = models.ForeignKey(products, on_delete=models.CASCADE)
 
 class wishlist(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,default=1)
     items = models.ManyToManyField(wishlistdetails)
 
 class review(models.Model):
-    user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,default=1)
     body=models.CharField(max_length=250)
 
 '''

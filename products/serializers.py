@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import products,category,branch,features,productfeatures,limited_offers
-
+from .models import products,category,branch,features,productfeatures,limited_offers,brand_name
 class string(serializers.StringRelatedField):
     def to_internal_value(self, data):
         return data
@@ -34,15 +33,20 @@ class branchserializer(serializers.ModelSerializer):
         model=branch
         fields=['name','QR_code','id']
 
+class brandserializer(serializers.ModelSerializer):
+    class Meta:
+        model=brand_name
+        fields=['name','id']
 
 class productsserializer(serializers.ModelSerializer):
     category=string()
+    brands=string()
     branch=serializers.SerializerMethodField()
     feature=serializers.SerializerMethodField()
     featurecount=serializers.SerializerMethodField()
     class Meta:
         model=products
-        fields=['name','Barcode','description','discount_price','image','id','category','price','feature','featurecount','branch']
+        fields=['name','Barcode','description','discount_price','image','id','category','brands','price','feature','featurecount','branch']
     def get_feature(self,obj):
         return ProductFeaturesSerializer(obj.features_set.all(),many=True).data
     def get_featurecount(self,obj):

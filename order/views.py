@@ -246,3 +246,5 @@ class submitorder(APIView):
                       i.ordered=True
                       i.save()
             return Response(status=HTTP_200_OK)
+
+

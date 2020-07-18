@@ -46,10 +46,7 @@ INSTALLED_APPS = [
     'user',
     'order',
     'products',
-    'paypal.standard.ipn',
-    'checkout',
-    'bootstrap4',
-     'allauth.socialaccount',
+    'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
 ]
@@ -116,7 +113,7 @@ DATABASES = {
        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'GP_APP',
         'USER':'postgres',
-        'PASSWORD':'omarzero130',
+        'PASSWORD':'485916273',
         'HOST':'127.0.0.1',
         'PORT':'5432',
     }
@@ -172,8 +169,7 @@ os.path.join(BASE_DIR,'templates/static')
 CORS_ORIGIN_ALLOW_ALL=True
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'pics')
-PAYPAL_TEST=True
-PAYPAL_RECIVER_EMAIL='mazenreal22@gmail.com'
+
 
 CORS_ALLOW_HEADERS = [
     'userid',

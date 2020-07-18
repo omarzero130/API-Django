@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import products,category,branch,features,productfeatures
+from .models import products,category,branch,features,productfeatures,brand_name
 # Register your models here.
 
 class productfeaturesAdmin(admin.ModelAdmin):
@@ -41,3 +41,4 @@ admin.site.register(features,variationAdmin)
 admin.site.register(products)
 admin.site.register(category)
 admin.site.register(branch)
+admin.site.register(brand_name)

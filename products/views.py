@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveDestroyAPIView
 from rest_framework.viewsets import ModelViewSet
-from .models import products,branch,category,limited_offers
+from .models import products,branch,category,limited_offers,productfeatures,features,brand_name
 from .serializers import (productsserializer,
                           productscreateserializer,
                           branchserializer,categoryserializer)
@@ -12,6 +12,11 @@ import urllib.request
 import bs4 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+import ast
+from django.db.models import Q
+from itertools import chain
+
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 2
@@ -55,6 +60,78 @@ class productfilter(ListAPIView):
         prod=products.objects.filter(category=cat)
         return prod
 
+class homepage(ListAPIView):
+    serializer_class=productsserializer
+    def get_queryset(self):
+        l=[]
+        c=[]
+        brands=[]
+        cat=self.request.META.get('HTTP_CATEGORY',[])
+        max=self.request.META.get('HTTP_MAX',None)
+        min=self.request.META.get('HTTP_MIN',None)
+        brand=self.request.META.get('HTTP_BRAND1',[])
+        feats=self.request.META.get('HTTP_FEATS',[])
+        name = self.request.query_params.get('name', None)
+
+        if feats:    
+            feats=ast.literal_eval(feats)
+        if cat:
+            cat=ast.literal_eval(cat)
+        if brand:
+            brand=ast.literal_eval(brand)    
+        queryset=products.objects.all()
+        print(max)
+        if name:
+            queryset=queryset.filter(Q(name__icontains=name))
+        if(cat):
+            for i in cat:
+                categ=category.objects.get(name=i)
+                c.append(categ.id)
+                
+            queryset=queryset.filter(category__in=c)
+
+        if(max and min):
+                queryset=queryset.filter(price__lte=max,price__gte=min)
+        if(brand):
+            for i in brand: 
+                br=brand_name.objects.get(name=i)
+            print(brands)
+    
+            queryset=queryset.filter(brands__in=brands)    
+        if(feats):
+            for i  in feats:
+               if(productfeatures.objects.filter(values=i).count()>0): 
+                    PF=productfeatures.objects.filter(values=i)
+                    for x in PF:
+                        F=features.objects.get(id=x.feat.id)
+                        print(F.product.id)
+                        l.append(F.product)
+                    for x in queryset:
+                        if x not in l:
+                            queryset=queryset.exclude(id = x.id)
+               else:
+                   pass
+        return queryset
+   
+
+
+class homepage2(APIView):
+    def get(self,request):
+        categorys=[]
+        branches=[]
+        features=[]
+        brs=branch.objects.all()
+        for i in brs:
+            branches.append(i.name)
+        cats=category.objects.all()    
+        for i in cats:
+            categorys.append(i.name)    
+
+        data={
+            'categories':categorys,
+            'branches':branches
+        }    
+        return Response(data)
 def scrape():
     path=''
     counter=5

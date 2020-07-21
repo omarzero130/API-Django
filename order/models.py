@@ -1,5 +1,4 @@
 from django.db import models
-from user.models import User
 from products.models import products
 from GP_FINAL import settings
 from django.utils.timezone import now

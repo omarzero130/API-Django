@@ -60,6 +60,16 @@ class orderListSerializer(serializers.ModelSerializer):
     def get_total(self,obj):
         return obj.total()
    
+class wishlistdetailsserializer(serializers.ModelSerializer):
+    product=serializers.SerializerMethodField()
+
+    class Meta:
+        model = wishlistdetails
+        fields = ['product', 'id']
+
+    def get_product(self, obj):
+        return productsserializer(obj.product).data
+
 
 
 class wishlistserializer(serializers.ModelSerializer):
@@ -70,17 +80,7 @@ class wishlistserializer(serializers.ModelSerializer):
         fields=['user','id','items']
 
     def get_items(self,obj):
-        return orderdetails(obj.items.all(),many=True).data
-
-class wishlistdetailsserializer(serializers.ModelSerializer):
-    product=serializers.SerializerMethodField()
-
-    class Meta:
-        model = wishlistdetails
-        fields = ['product', 'id']
-
-    def get_product(self, obj):
-        return productsserializer(obj.product).data
+        return wishlistdetailsserializer(obj.items.all(),many=True).data
 
 
 class reviewserializer(serializers.ModelSerializer):

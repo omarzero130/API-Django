@@ -53,10 +53,11 @@ class productsserializer(serializers.ModelSerializer):
         return obj.features_set.count()
     def get_branch(self,obj):
         return branchserializer(obj.branch).data
+  
 class productscreateserializer(serializers.ModelSerializer):
     class Meta:
         model=products
-        fields=['name','Barcode','description','image','price','category','branch']
+        fields=['name','Barcode','description','brands','image','price','category','branch']
 
 
 class limitedoffersserializer(serializers.ModelSerializer):

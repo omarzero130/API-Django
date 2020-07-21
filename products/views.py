@@ -36,7 +36,7 @@ class productslist(ListAPIView):
         return queryset
 
 class productscreate(CreateAPIView):
-    queryset = products.objects.all
+    queryset = products.objects.all()
     serializer_class = productscreateserializer
 
 

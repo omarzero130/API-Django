@@ -30,7 +30,6 @@ class productpagination(pagination.PageNumberPagination):
         return Response(queryset)
 
 class productslist(ListAPIView):
-    pagination_class=productpagination
     queryset = products.objects.all().order_by('-id')
     serializer_class = productsserializer
     filter_backends = [filters.SearchFilter]

@@ -1,4 +1,7 @@
 from django.db import models
+import order
+from user.models import User
+
 
 def CreateQR_Code(name):
     qr=name.replace(' ','_')
@@ -37,13 +40,16 @@ class products(models.Model):
     discount_price=models.FloatField(default=0.00)
     image=models.ImageField(default='')
     branch=models.ForeignKey(branch,on_delete=models.CASCADE)
-    brands=models.ForeignKey(brand_name,on_delete=models.CASCADE,default=1)
+    brands=models.ForeignKey(brand_name,on_delete=models.CASCADE)
     def __str__(self):
         return f'{self.name}_{self.branch}'
     class Meta:
             unique_together=(
             ('name','branch')
         )
+   
+
+
 
  
 class features(models.Model):

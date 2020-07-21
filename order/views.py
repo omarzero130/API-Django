@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 from .models import orders, order_details, products, wishlistdetails, wishlist, review
-from .serializers import orderListSerializer, orderdetails, reviewserializer
+from .serializers import orderListSerializer, orderdetails, reviewserializer,wishlistserializer,wishlistdetailsserializer
 from user.models import User
 from rest_framework.authtoken.models import Token
 from products.models import features,productfeatures
@@ -100,7 +100,7 @@ class orderslist(ListAPIView):
         #print(self.request.META.get('HTTP_AUTHORIZATION',None))
         token=self.request.META.get('HTTP_AUTHORIZATION',None)
         use=Token.objects.get(key=token).user
-        queryset = orders.objects.filter    (ordered=True, user=use)
+        queryset = orders.objects.filter(ordered=True, user=use)
         return queryset
 
 
@@ -115,27 +115,42 @@ class orderdetails(RetrieveAPIView):
         return queryset
 
 
-'''
-class addtowhitelist():
+
+class Addtowhitelist(APIView):
     def post(self,request):
         item_id=request.data.get('id',None)
+        token=request.data.get('token',None)
         if item_id is None:
             return Response({"message":"invalid request"},status=Http404)
-        it = get_object_or_404(branch_products, id=item_id)
-        wish, created = wishlistdetails.objects.get_or_create(branch_products=it, use=request.user)
-        wishs = wishlist.objects.filter(use=request.user)
+        it = get_object_or_404(products, id=item_id)
+        user=Token.objects.get(key=token).user
+        wish, created = wishlistdetails.objects.get_or_create( product=it)
+        wishs = wishlist.objects.filter(user=user)
         if wishs.exists():
             W = wishs[0]
-            if W.items.filter(branch_products__id=it.id).exists():
-                return Response({"message": "item already in the wishlist"}, status=Http404)
+            if W.items.filter(product_id=it.id).exists():
+                x=W.items.get(product_id=it.id)
+                x.delete()
+                return Response({"message": "item already in the wishlist"})
             else:
                 W.items.add(wish)
                 return Response(status=HTTP_200_OK)
         else:
-            W = orders.objects.create(use=request.user)
+            W = wishlist.objects.create(user=user)
             W.items.add(wish)
-            return Response(status=HTTP_200_OK)
-'''
+            return Response({"message": "added successfully "},status=HTTP_200_OK)
+            
+class whitelistList(RetrieveAPIView):
+    serializer_class=wishlistserializer
+    def get_object(self):
+       token=self.request.META.get('HTTP_TOKEN',None)
+       user=Token.objects.get(key=token).user
+       object= wishlist.objects.get(user=user)
+       return object
+
+class deleteFromWhitelist(DestroyAPIView):
+    serializer_class=wishlistdetailsserializer
+    queryset=wishlistdetails.objects.all()
 
 
 class review(CreateAPIView):
@@ -171,9 +186,9 @@ class topuserproducts(APIView):
 
                counted.append(dic)
 
-        print(sorted(counted, key = lambda i: i['count'],reverse=True)[:2]  )
+        print(sorted(counted, key = lambda i: i['count'],reverse=True)[:3]  )
 
-        return Response( sorted(counted, key = lambda i: i['count'],reverse=True)[:2] )
+        return Response( sorted(counted, key = lambda i: i['count'],reverse=True)[:3] )
 
 class submitorder(APIView):
     def post(self,request):
